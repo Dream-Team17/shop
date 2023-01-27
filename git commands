@@ -1,0 +1,26 @@
+1) в гитхабе принять приглашение в проект https://github.com/Dream-Team17/shop.git
+1) в пайчарме нажать на Git и там выбрать Сlone там в url поставить ссылку https://github.com/Dream-Team17/shop.git
+2) после того как склонировали pip install -r requirements.txt
+3)git remote -v
+если выйдет
+origin  https://github.com/Dream-Team17/shop.git (fetch)
+origin  https://github.com/Dream-Team17/shop.git (push)
+4)внести свои изменение и
+git push origin main
+5)если хотите эти изменение запушить в свой собственный репозиторий то
+git remote add my_github_repo https://github.com/(ваша ссылка)
+6) внести изменение и запушить в свой репозиторий т.е
+git push my_github_repo main
+7) git remote -v
+my_github_repo  https://github.com/ElnuraDubanaeva/delivery_kg.git (fetch)
+my_github_repo  https://github.com/ElnuraDubanaeva/delivery_kg.git (push)
+origin  https://github.com/Dream-Team17/shop.git (fetch)
+origin  https://github.com/Dream-Team17/shop.git (push)
+ЕСЛИ ЕСТЬ ИДЕИ ПО ЛУЧШЕ ТО В ГРУППУ НАПИШИТЕ))
+
+
+
+
+
+
+
