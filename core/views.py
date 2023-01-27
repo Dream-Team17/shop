@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+#lasttry
 @api_view(['GET'])
 def test_view(request):
     dict_ = {
