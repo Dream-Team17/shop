@@ -1,6 +1,6 @@
 from django.contrib import admin
 from core.models import Product, Category, Subcategory, Company
-
+#one more time
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "description", "price", "created_data")
