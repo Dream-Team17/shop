@@ -20,4 +20,5 @@ from core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/test/', views.test_view)
+    #smth
 ]
