@@ -6,41 +6,32 @@ from django.db import models
 
 
 # Create your models here.
-
+now = datetime.now()
 def path_and_rename(instance, filename):
     upload_to = 'product_images'
     ext = filename.split('.')[-1]
-    # get filename
-    if instance.pk:
-        filename = '{}.{}'.format(instance.pk, ext)
-    else:
-        # set filename as random string
-        filename = '{}.{}'.format(datetime.today(), ext)
-        # return the whole path to the file
+
+    # set filename as random string
+    filename = f'{now.strftime("%d-%m-%Y %H-%M")}.{ext}'
+    # return the whole path to the file
     return os.path.join(upload_to, filename)
 
 def path_and_rename2(instance, filename):
     upload_to = 'category_images'
     ext = filename.split('.')[-1]
-    # get filename
-    if instance.pk:
-        filename = '{}.{}'.format(instance.pk, ext)
-    else:
-        # set filename as random string
-        filename = '{}.{}'.format(datetime.today(), ext)
-        # return the whole path to the file
+
+
+    filename = f'{now.strftime("%d-%m-%Y %H-%M")}.{ext}'
+    # return the whole path to the file
     return os.path.join(upload_to, filename)
 
 def path_and_rename3(instance, filename):
     upload_to = 'subcategory_images'
     ext = filename.split('.')[-1]
-    # get filename
-    if instance.pk:
-        filename = '{}.{}'.format(instance.pk, ext)
-    else:
-        # set filename as random string
-        filename = '{}.{}'.format(datetime.today(), ext)
-        # return the whole path to the file
+
+    # set filename as random string
+    filename = f'{now.strftime("%d-%m-%Y %H-%M")}.{ext}'
+    # return the whole path to the file
     return os.path.join(upload_to, filename)
 
 class Product(models.Model):
