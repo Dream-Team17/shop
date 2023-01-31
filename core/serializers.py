@@ -1,13 +1,27 @@
 from rest_framework import serializers
-from .models import Product, Category, Company, Subcategory
+from .models import Product, Category, Subcategory, AboutCompany
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    categories = serializers.SerializerMethodField()
-
     class Meta:
         model = Product
-        fields = ' id name description  categories image'.split()
+        fields = ('name', 'image', 'description', 'price', 'categories', 'subcategories', 'available', 'discount')
 
-    def get_categories(self, instance):
-        return instance.categories.name
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('name', 'image', 'slug')
+
+
+
+class SubcategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subcategory
+        fields = ('name', 'categories')
+
+
+class AboutCompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutCompany
+        fields = ('description',)
