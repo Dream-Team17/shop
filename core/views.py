@@ -12,12 +12,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ['name', 'description']
 
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ['name',]
+    search_fields = ['name', ]
+
 
 class SubcategoryViewSet(viewsets.ModelViewSet):
     queryset = Subcategory.objects.all()
@@ -27,13 +29,7 @@ class SubcategoryViewSet(viewsets.ModelViewSet):
     search_fields = ('name',)
 
 
-
-
-
 class AboutCompanyViewSet(viewsets.ModelViewSet):
     queryset = AboutCompany.objects.all()
     serializer_class = AboutCompanySerializer
     lookup_field = 'slug'
-
-
-

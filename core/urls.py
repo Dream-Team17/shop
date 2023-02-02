@@ -19,5 +19,5 @@ urlpatterns = [
                                                                         'put': 'update',
                                                                         'delete': 'destroy'})),
     path('aboutcompany/', views.AboutCompanyViewSet.as_view({'get': 'list',
-                                                             'post': 'create',})),
+                                                             'post': 'create', })),
 ]
