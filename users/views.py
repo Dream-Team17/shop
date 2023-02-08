@@ -1,10 +1,13 @@
 import jwt
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.urls import reverse
-from rest_framework import status, generics
+from django.utils.encoding import smart_bytes
+from django.utils.http import urlsafe_base64_encode
+from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.exceptions import AuthenticationFailed
-from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer
+from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer, \
+    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer, LogOutSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .utils import Util
@@ -34,7 +37,7 @@ class RegisterView(generics.GenericAPIView):
         return Response(data=user_data, status=status.HTTP_201_CREATED)
 
 
-class VerifyEmail(APIView):
+class VerifyEmailView(APIView):
     serializer_class = EmailVerifySerializer
     token_param_config = openapi.Parameter('token', in_=openapi.IN_QUERY, description='Description',
                                            type=openapi.TYPE_STRING)
@@ -43,7 +46,7 @@ class VerifyEmail(APIView):
     def get(self, request):
         token = request.GET.get('token')
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
             user = User.objects.get(id=payload['user_id'])
             if not user.is_verified:
                 user.is_verified = True
@@ -54,6 +57,23 @@ class VerifyEmail(APIView):
         except jwt.exceptions.DecodeError as error:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
+#
+# class LoginView(APIView):
+#     def post(self, request):
+#         email = request.data['email']
+#         password = request.data['password']
+#         user = User.objects.filter(email=email).first()
+#         if user is None:
+#             raise AuthenticationFailed('Invalid credentials!')
+#         if not user.check_password(password):
+#             raise AuthenticationFailed('Invalid credentials!')
+#         access_token = create_access_token(user.id)
+#         refresh_token = create_refresh_token(user.id)
+#         response = Response()
+#         response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
+#         response.data = {'access_token': access_token}
+#         return response
+
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -62,3 +82,56 @@ class LoginView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RequestResetPasswordEmailView(generics.GenericAPIView):
+    serializer_class = RequestResetPasswordEmailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = request.data.get('email', '')
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+            current_site = get_current_site(request=request).domain
+            relative_link = reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            absurl = 'http://' + current_site + relative_link
+            email_body = 'Hello \n' + ' Use this link below to reset your password\n' + absurl
+            data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Reset your password'}
+            Util.send_email(data)
+        return Response({'success': 'We have sent you link to reset your password'},
+                        status=status.HTTP_200_OK)
+
+
+class PasswordTokenCheckView(generics.GenericAPIView):
+    serializer_class = PasswordTokenCheckViewSerializer
+
+    def get(self, request, uidb64, token):
+        data = {'uidb64': uidb64, 'token': token}
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64, 'token': token},
+                        status=status.HTTP_200_OK)
+
+
+class SetNewPasswordView(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
+
+
+class LogOutView(generics.GenericAPIView):
+    serializer_class = LogOutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -6,7 +6,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -25,22 +25,22 @@ DEBUG = True if os.environ.get('DEBUG') == 'on' else False
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'django.contrib.contenttypes',
+    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_social_oauth2',
     'rest_framework_simplejwt',
-    'core',
+    'rest_framework',
     'django_filters',
     'drf_yasg',
     'users',
-
+    'core',
 ]
 
 JAZZMIN_SETTINGS = {
@@ -225,9 +225,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-    {'NAME': 'users.registration_validators.UppercaseValidator', },
-    {'NAME': 'users.registration_validators.IsIncludeOneDigit', },
-    {'NAME': 'users.registration_validators.IsIncludeOnlyLatyn', },
+    {
+        'NAME': 'users.registration_validators.UppercaseValidator',
+    },
+    {
+        'NAME': 'users.registration_validators.IsIncludeOneDigit',
+    },
+    {
+        'NAME': 'users.registration_validators.IsIncludeOnlyLatyn',
+    },
 ]
 
 # Internationalization
@@ -270,3 +276,13 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
