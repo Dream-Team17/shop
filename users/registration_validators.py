@@ -1,12 +1,17 @@
 import re
+from rest_framework import exceptions
 from rest_framework.serializers import ValidationError
 from django.utils.translation import gettext as _
 
 
 def validate_number(number):
+    char = re.findall(r'(?:[a-zA-Z])', number.lower())
+    if len(char) != 0:
+        raise exceptions.ValidationError('Number is not valid',
+                                         code='Number should contain only digits')
     if not re.findall(r"(?:[0-9]{9})", number):
-        raise ValidationError('Number is not valid',
-                              code='Numbers length is should be 9')
+        raise exceptions.ValidationError('Number is not valid',
+                                         code='Numbers length is should be 9')
 
 
 class UppercaseValidator(object):

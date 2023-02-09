@@ -11,6 +11,7 @@ from django.contrib.auth import password_validation
 from rest_framework import serializers, exceptions, status
 from .models import User
 from django.utils.http import urlsafe_base64_decode
+from django.db.utils import IntegrityError
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -35,16 +36,25 @@ class RegisterSerializer(serializers.ModelSerializer):
         first_name = attrs.get('first_name', '')
         last_name = attrs.get('last_name', '')
         username = attrs.get('username', '')
-        validate = (first_name, last_name, username)
+        email = attrs.get('email', '')
+        validate = (('first_name', first_name), ('last_name', last_name), ('username', username))
         for value in validate:
-            if not value.isalnum():
-                raise serializers.ValidationError('The user datas should only contain alphanumeric characters')
+            if not value[1].isalnum():
+                raise serializers.ValidationError(
+                    f'The users {value[0]}: {value[1]} should only contain alphanumeric characters', 400)
+        email1 = User.objects.filter(email=email).exists()
+        username1 = User.objects.filter(username=username).exists()
+        validate_unique = (('email', email1, email), ('username', username1, username))
+        for value in validate_unique:
+            if value[1]:
+                raise serializers.ValidationError(f'This {value[0]}: {value[2]} is not available, please write new one',400)
         return super().validate(attrs)
 
     def validate_number(self, number):
-        char = re.findall(r'(?:[a-zA-Z])', number.lower())
-        if len(char) != 0:
-            raise exceptions.ValidationError('Number should contain only digits')
+        try:
+            validate_number(number)
+        except exceptions.ValidationError as error:
+            raise serializers.ValidationError(f'error: {error.get_codes()}')
         return number
 
     def validate_password(self, password):
@@ -58,21 +68,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         return password
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        number = validated_data.pop('number', None)
+        password = validated_data.pop('password', '')
+        number = validated_data.pop('number', '')
         user = self.Meta.model(**validated_data)
         if password:
             user.set_password(password)
-        if number:
-            try:
-                validate_number(number)
-            except exceptions.ValidationError as error:
-                raise serializers.ValidationError(f'error: {error.get_codes()}')
-            else:
-                user.number = f'+996{number}'
-        else:
-            raise serializers.ValidationError('no number')
-        user.save()
+        try:
+            user.number = f'+996{number}'
+            user.save()
+        except IntegrityError:
+            raise serializers.ValidationError(f'This number: {number} is not available, please write new one')
         return user
 
 
@@ -92,10 +97,11 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def get_tokens(self, obj):
         user = User.objects.get(email=obj['email'])
-        return {
-            'refresh': user.tokens()['refresh'],
-            'access': user.tokens()['access']
-        }
+        if user.is_verified:
+            return {
+                'refresh': user.tokens()['refresh'],
+                'access': user.tokens()['access']
+            }
 
     class Meta:
         model = User

@@ -19,6 +19,7 @@ from drf_yasg import openapi
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    queryset = User.objects.all()
 
     def post(self, request):
         user = request.data
@@ -31,7 +32,7 @@ class RegisterView(generics.GenericAPIView):
         current_site = get_current_site(request).domain
         relative_link = reverse('email-verify')
         absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
-        email_body = 'Hi ' + user.username + '! ' + ' Use link below to verify your email\n' + absurl
+        email_body = 'Hi ' + user.username.title() + '! ' + ' Use link below to verify your email\n' + absurl
         data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Verify your email'}
         Util.send_email(data)
         return Response(data=user_data, status=status.HTTP_201_CREATED)
@@ -56,23 +57,6 @@ class VerifyEmailView(APIView):
             return Response({'error': 'Activation link expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as error:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
-
-#
-# class LoginView(APIView):
-#     def post(self, request):
-#         email = request.data['email']
-#         password = request.data['password']
-#         user = User.objects.filter(email=email).first()
-#         if user is None:
-#             raise AuthenticationFailed('Invalid credentials!')
-#         if not user.check_password(password):
-#             raise AuthenticationFailed('Invalid credentials!')
-#         access_token = create_access_token(user.id)
-#         refresh_token = create_refresh_token(user.id)
-#         response = Response()
-#         response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
-#         response.data = {'access_token': access_token}
-#         return response
 
 
 class LoginView(generics.GenericAPIView):
