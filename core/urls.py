@@ -6,5 +6,7 @@ router = routers.DefaultRouter()
 router.register(r'products', views.ProductViewSet)
 router.register(r'categories', views.CategoryViewSet)
 router.register(r'subcategories', views.SubcategoryViewSet)
+router.register(r'new-products', views.NewProductViewSet)
+router.register(r'discount-products', views.DiscountProductViewSet)
 
 urlpatterns = router.urls

@@ -8,7 +8,8 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories', 'subcategories', 'available', 'discount', 'created_date', 'updated_date')
+            'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
+            'subcategories', 'available', 'discount', 'created_date', 'updated_date', 'is_discount', 'is_new')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -27,4 +28,15 @@ class SubcategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'categories', 'subcategory_slug')
 
 
+class NewProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ( 'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
+            'subcategories', 'available', 'discount', 'created_date', 'updated_date', 'is_discount', 'is_new')
 
+
+class DiscountProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ( 'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
+            'subcategories', 'available', 'discount', 'created_date', 'updated_date', 'is_discount', 'is_new')
