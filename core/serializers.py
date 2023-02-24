@@ -1,33 +1,30 @@
 from rest_framework import serializers
-from .models import Product, Category, Subcategory, AboutCompany
+from .models import Product, Category, Subcategory
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    slug = serializers.HiddenField(default='')
+
 
     class Meta:
         model = Product
         fields = (
-            'name', 'slug', 'image', 'description', 'price', 'categories', 'subcategories', 'available', 'discount')
+            'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories', 'subcategories', 'available', 'discount', 'created_date', 'updated_date')
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    slug = serializers.HiddenField(default='')
+
 
     class Meta:
         model = Category
-        fields = ('name', 'image', 'slug')
+        fields = ('id', 'name', 'image', 'category_slug')
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
-    slug = serializers.HiddenField(default='')
+
 
     class Meta:
         model = Subcategory
-        fields = ('name', 'categories', 'slug')
+        fields = ('id', 'name', 'categories', 'subcategory_slug')
 
 
-class AboutCompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AboutCompany
-        fields = ('description',)
+

@@ -4,8 +4,6 @@ from datetime import datetime
 import pytils
 from django.db import models
 
-from django.utils.text import slugify
-
 now = datetime.now()
 
 
@@ -41,9 +39,10 @@ def path_and_rename3(instance, filename):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, help_text="Введите название товара", db_index=True)
-    slug = models.SlugField(max_length=100, db_index=True, unique=True, verbose_name='URl', default='',
+    product_slug = models.SlugField(max_length=100, db_index=True, unique=True, verbose_name='URl', default='',
                             help_text="Перед вводом названия продукта очистите это поле")
-    image = models.ImageField(help_text="Загрузите картинку товара", upload_to=path_and_rename, blank=True, null=True)
+    image = models.ImageField(help_text="Загрузите картинку товара", upload_to=path_and_rename, blank=True, null=True,
+                              default='http://127.0.0.1:8000/media/product_images/11-02-2023_20-39.jpg')
     description = models.TextField(help_text="Введите описание товара", null=True, blank=True, default='')
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Введите цену")
     categories = models.ForeignKey('Category', on_delete=models.CASCADE, help_text="Выберите категорию")
@@ -55,16 +54,16 @@ class Product(models.Model):
     discount = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ('name', 'slug')
+        ordering = ('name', 'product_slug')
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
-        index_together = (('id', 'slug'),)
+        index_together = (('id', 'product_slug'),)
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.slug = pytils.translit.slugify(self.name)
+        self.product_slug = pytils.translit.slugify(self.name)
         super(Product, self).save(*args, **kwargs)
 
     # def save(self, *args, **kwargs):
@@ -77,11 +76,11 @@ class Category(models.Model):
     image = models.ImageField(help_text="Загрузите картинку для категории",
                               upload_to=path_and_rename2,
                               blank=True, null=True)
-    slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URl', default='',
+    category_slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URl', default='',
                             help_text="Перед вводом названия категории очистите это поле")
 
     def save(self, *args, **kwargs):
-        self.slug = pytils.translit.slugify(self.name)
+        self.category_slug = pytils.translit.slugify(self.name)
         super(Category, self).save(*args, **kwargs)
 
     class Meta:
@@ -96,7 +95,7 @@ class Category(models.Model):
 class Subcategory(models.Model):
     name = models.CharField(max_length=255, help_text="Введите название подкатегории")
     categories = models.ForeignKey('Category', on_delete=models.CASCADE, help_text="Выберите категорию")
-    slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URl', default='',
+    subcategory_slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URl', default='',
                             help_text="Перед вводом названия подкатегории очистите это поле")
 
     class Meta:
@@ -108,14 +107,7 @@ class Subcategory(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.slug = pytils.translit.slugify(self.name)
+        self.subcategory_slug = pytils.translit.slugify(self.name)
         super(Subcategory, self).save(*args, **kwargs)
 
 
-class AboutCompany(models.Model):
-    description = models.TextField(help_text="Статья или информация о сайте/компании", default='Информация о сайте',
-                                   null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'О компании'
-        verbose_name_plural = 'О компании'

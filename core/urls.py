@@ -1,18 +1,10 @@
 from django.urls import path
 from . import views
+from rest_framework import routers
 
-get_post = {'get': 'list',
-            'post': 'create'}
-get_put_delete = {'get': 'retrieve',
-                  'put': 'update',
-                  'delete': 'destroy'}
-urlpatterns = [
+router = routers.DefaultRouter()
+router.register(r'products', views.ProductViewSet)
+router.register(r'categories', views.CategoryViewSet)
+router.register(r'subcategories', views.SubcategoryViewSet)
 
-    path('products/', views.ProductViewSet.as_view(get_post)),
-    path('products/<str:slug>/', views.ProductViewSet.as_view(get_put_delete)),
-    path('categories/', views.CategoryViewSet.as_view(get_post)),
-    path('categories/<str:slug>/', views.CategoryViewSet.as_view(get_put_delete)),
-    path('subcategories/', views.SubcategoryViewSet.as_view(get_post)),
-    path('subcategories/<str:slug>/', views.SubcategoryViewSet.as_view(get_put_delete)),
-    path('aboutcompany/', views.AboutCompanyViewSet.as_view(get_post)),
-]
+urlpatterns = router.urls
