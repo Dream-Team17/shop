@@ -18,10 +18,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=30, min_length=6,
                                      help_text=password_validation.password_validators_help_texts(), write_only=True,
                                      style={'input_type': 'password'})
-    first_name = serializers.CharField(max_length=30, min_length=2,
-                                       help_text='Firstname should contain only alphanumeric characters')
-    last_name = serializers.CharField(max_length=30, min_length=2,
-                                      help_text='Lastname should contain only alphanumeric characters')
+    # first_name = serializers.CharField(max_length=30, min_length=2,
+    #                                    help_text='Firstname should contain only alphanumeric characters')
+    # last_name = serializers.CharField(max_length=30, min_length=2,
+    #                                   help_text='Lastname should contain only alphanumeric characters')
     email = serializers.EmailField(max_length=30, min_length=5,
                                    help_text='Username should contain only alphanumeric characters')
     number = serializers.CharField(max_length=9,
@@ -30,14 +30,14 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password', 'number']
+        fields = ['id', 'username', 'email', 'password', 'number']
 
     def validate(self, attrs):
-        first_name = attrs.get('first_name', '')
-        last_name = attrs.get('last_name', '')
+        # first_name = attrs.get('first_name', '')
+        # last_name = attrs.get('last_name', '')
         username = attrs.get('username', '')
         email = attrs.get('email', '')
-        validate = (('first_name', first_name), ('last_name', last_name), ('username', username))
+        validate = ('username', username)
         for value in validate:
             if not value[1].isalnum():
                 raise serializers.ValidationError(
@@ -90,7 +90,7 @@ class EmailVerifySerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=255, min_length=5)
+    email = serializers.EmailField(max_length=255, min_length=1)
     password = serializers.CharField(max_length=50, min_length=6, write_only=True)
     username = serializers.CharField(max_length=30, min_length=3, read_only=True)
     tokens = serializers.SerializerMethodField()

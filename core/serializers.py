@@ -3,13 +3,16 @@ from .models import Product, Category, Subcategory
 
 
 class ProductSerializer(serializers.ModelSerializer):
-
+    price = serializers.FloatField(min_value=1)
+    discount_percent = serializers.FloatField(min_value=0)
+    discount_price = serializers.FloatField(min_value=0)
 
     class Meta:
         model = Product
         fields = (
             'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-            'subcategories', 'available', 'discount', 'created_date', 'updated_date', 'is_discount', 'is_new')
+            'subcategories', 'available', 'created_date', 'updated_date', 'is_discount', 'is_new', 'discount_price',
+        'discount_percent')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -32,11 +35,11 @@ class NewProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ( 'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-            'subcategories', 'available', 'discount', 'created_date', 'updated_date', 'is_discount', 'is_new')
+            'subcategories', 'available', 'discount_price', 'discount_percent', 'created_date', 'updated_date', 'is_discount', 'is_new')
 
 
 class DiscountProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ( 'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-            'subcategories', 'available', 'discount', 'created_date', 'updated_date', 'is_discount', 'is_new')
+            'subcategories', 'available', 'discount_price', 'discount_percent', 'created_date', 'updated_date', 'is_discount', 'is_new')

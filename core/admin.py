@@ -3,7 +3,8 @@ from core.models import Product, Category, Subcategory
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "description", "price", "created_date", "updated_date", "available", "discount")
+    list_display = ("name", "description", "price", "created_date", "updated_date", "available", "discount_price",
+                    "discount_percent")
     list_display_links = ("name",)
     search_fields = ("name", "description")
     prepopulated_fields = {'product_slug': ('name',)}

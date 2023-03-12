@@ -1,6 +1,7 @@
 from django.db import models
 import pytils
-from .utils import path_and_rename, path_and_rename2, path_and_rename3
+from .utils import path_and_rename, path_and_rename2, path_and_rename3, count_discount_price
+
 
 
 class Product(models.Model):
@@ -17,9 +18,12 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     available = models.BooleanField(default=True)
-    discount = models.PositiveIntegerField(default=0)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Скидка в %', null=True,
+                                           blank=True, default=0,)
     is_discount = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
+    discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Цена со скидкой', null=True,
+                                         blank=True, default=0, )
 
     class Meta:
         ordering = ('name', 'product_slug')
@@ -32,8 +36,9 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.product_slug = pytils.translit.slugify(self.name)
+        self.discount_price = count_discount_price(self)
+        self.discount_percent = count_discount_price(self)
         super(Product, self).save(*args, **kwargs)
-
 
 class Category(models.Model):
     name = models.CharField(max_length=255, help_text="Введите название категории")
