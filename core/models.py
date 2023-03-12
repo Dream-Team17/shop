@@ -24,6 +24,9 @@ class Product(models.Model):
     is_new = models.BooleanField(default=False)
     discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Цена со скидкой', null=True,
                                          blank=True, default=0, )
+    valid_time = models.IntegerField(verbose_name='Срок годности', null=True, blank=True)
+    weight_volume = models.FloatField(verbose_name='Вес/Объем', default=1, null=True, blank=True)
+    product_code = models.IntegerField(verbose_name='Код товара', unique=True, default='000000')
 
     class Meta:
         ordering = ('name', 'product_slug')

@@ -10,7 +10,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     lookup_field = 'product_slug'
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ['name', 'description']
+    search_fields = ['name', 'description', 'product_code']
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

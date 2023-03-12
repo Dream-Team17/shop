@@ -6,13 +6,14 @@ class ProductSerializer(serializers.ModelSerializer):
     price = serializers.FloatField(min_value=1)
     discount_percent = serializers.FloatField(min_value=0)
     discount_price = serializers.FloatField(min_value=0)
+    weight_volume = serializers.FloatField(min_value=1)
 
     class Meta:
         model = Product
         fields = (
             'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
             'subcategories', 'available', 'created_date', 'updated_date', 'is_discount', 'is_new', 'discount_price',
-        'discount_percent')
+        'discount_percent', 'valid_time', 'weight_volume', 'product_code')
 
 
 class CategorySerializer(serializers.ModelSerializer):
