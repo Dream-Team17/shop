@@ -33,19 +33,19 @@ def path_and_rename3(instance, filename):
     # return the whole path to the file
     return os.path.join(upload_to, filename)
 
-def count_discount_price(product):
-    discount_percent = product.discount_percent
-    price = product.price
-    discount_price = product.discount_price
-    if isinstance(discount_percent, float or int) > 0 and isinstance(discount_price, float or int)==0:
-        count_discount_price = float(price) - ((float(discount_percent) / 100) * float(price))
-        return count_discount_price
-    elif discount_percent==0 and isinstance(discount_price, float or int) > 0:
-        count_discount_percent = float(price) - ((float(discount_price) * 100) / float(price))
-        return count_discount_percent
-    elif isinstance(discount_percent, float or int) > 0 and isinstance(discount_price, float or int) > 0:
-        count_discount_price = float(price) - ((float(discount_price) * 100) / float(price))
-        return count_discount_price
+def discount_price_count(price, discount, discount_price):
+    discount = discount
+    price = price
+    discount_price = discount_price
+    if isinstance(discount, float or int) > 0 and discount_price == 0:
+        discount_price_count = float(price) - ((float(discount) / 100) * float(price))
+        return discount_price_count, discount
+    elif discount == 0 and isinstance(discount_price, float or int) > 0:
+        discount_count = float(price) - ((float(discount_price) * 100) / float(price))
+        return discount_price, discount_count
+    elif isinstance(discount, float or int) > 0 and isinstance(discount_price, float or int) > 0:
+        discount_count = float(price) - ((float(discount_price) * 100) / float(price))
+        return discount_price, discount_count
 
 # def count_discount_percent(discount_percent, price, discount_price):
 #     if isinstance(discount_percent, (float, int)) == 0 and isinstance(discount_price, (float, int)) > 0:

@@ -8,5 +8,6 @@ router.register(r'categories', views.CategoryViewSet)
 router.register(r'subcategories', views.SubcategoryViewSet)
 router.register(r'new-products', views.NewProductViewSet)
 router.register(r'discount-products', views.DiscountProductViewSet)
+router.register(r'vacants', views.VacantViewSet)
 
 urlpatterns = router.urls

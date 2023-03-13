@@ -1,7 +1,6 @@
 from django.db import models
 import pytils
-from .utils import path_and_rename, path_and_rename2, path_and_rename3, count_discount_price
-
+from .utils import path_and_rename, path_and_rename2, path_and_rename3, discount_price_count
 
 
 class Product(models.Model):
@@ -18,12 +17,12 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     available = models.BooleanField(default=True)
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Скидка в %', null=True,
-                                           blank=True, default=0,)
+    discount = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Скидка в %', null=True,
+                                   blank=True, default=0)
     is_discount = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
     discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Цена со скидкой', null=True,
-                                         blank=True, default=0, )
+                                         blank=True, default=0)
     valid_time = models.IntegerField(verbose_name='Срок годности', null=True, blank=True)
     weight_volume = models.FloatField(verbose_name='Вес/Объем', default=1, null=True, blank=True)
     product_code = models.IntegerField(verbose_name='Код товара', unique=True, default='000000')
@@ -39,9 +38,9 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.product_slug = pytils.translit.slugify(self.name)
-        self.discount_price = count_discount_price(self)
-        self.discount_percent = count_discount_price(self)
+        # self.discount_price, self.discount = discount_price_count(self.price, self.discount, self.discount_price)
         super(Product, self).save(*args, **kwargs)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255, help_text="Введите название категории")
@@ -81,3 +80,27 @@ class Subcategory(models.Model):
     def save(self, *args, **kwargs):
         self.subcategory_slug = pytils.translit.slugify(self.name)
         super(Subcategory, self).save(*args, **kwargs)
+
+
+class Vacant(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Название вакансии')
+    vacant_slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URL', default='')
+    salary = models.IntegerField(verbose_name='Заработная плата')
+    conditions = models.TextField(verbose_name='Условия работы', blank=True, null=True)
+    information = models.TextField(verbose_name='Информация', blank=True, null=True)
+    duties = models.TextField(verbose_name='Обязанности', blank=True, null=True)
+    requirements = models.TextField(verbose_name='Требования', blank=True, null=True)
+    additional = models.TextField(verbose_name='Преимуществом будет', blank=True, null=True)
+    key_skills = models.TextField(verbose_name='Ключевые навыки')
+
+    class Meta:
+        ordering = ('title',)
+        verbose_name = 'Вакансия'
+        verbose_name_plural = 'Вакансии'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        self.vacant_slug = pytils.translit.slugify(self.title)
+        super(Vacant, self).save(*args, **kwargs)
