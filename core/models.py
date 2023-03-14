@@ -17,11 +17,11 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     available = models.BooleanField(default=True)
-    discount = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Скидка в %', null=True,
-                                   blank=True, default=0)
-    is_discount = models.BooleanField(default=False)
+    # discount = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Скидка в %', null=True,
+    #                                blank=True, default=0)
+    # is_discount = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
-    discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Цена со скидкой', null=True,
+    discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Цена со скидкой', null=False,
                                          blank=True, default=0)
     valid_time = models.IntegerField(verbose_name='Срок годности', null=True, blank=True)
     weight_volume = models.FloatField(verbose_name='Вес/Объем', default=1, null=True, blank=True)
@@ -104,3 +104,21 @@ class Vacant(models.Model):
     def save(self, *args, **kwargs):
         self.vacant_slug = pytils.translit.slugify(self.title)
         super(Vacant, self).save(*args, **kwargs)
+
+
+class FAQ(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Название вопроса')
+    description = models.TextField(verbose_name='Ответ на вопрос')
+    faq_slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URL', default='')
+
+    class Meta:
+        ordering = ('title',)
+        verbose_name = 'Часто задаваемый вопрос'
+        verbose_name_plural = 'Часто задаваемые вопросы'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        self.faq_slug = pytils.translit.slugify(self.title)
+        super(FAQ, self).save(*args, **kwargs)

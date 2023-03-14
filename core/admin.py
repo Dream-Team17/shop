@@ -1,10 +1,9 @@
 from django.contrib import admin
-from core.models import Product, Category, Subcategory, Vacant
+from core.models import Product, Category, Subcategory, Vacant, FAQ
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "description", "price", "created_date", "updated_date", "available", "discount_price",
-                    "discount")
+    list_display = ("name", "description", "price", "created_date", "updated_date", "available", "discount_price")
     list_display_links = ("name",)
     search_fields = ("name", "description")
     prepopulated_fields = {'product_slug': ('name',)}
@@ -35,3 +34,4 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Subcategory, SubcategoryAdmin)
 admin.site.register(Vacant, VacantAdmin)
+admin.site.register(FAQ)
