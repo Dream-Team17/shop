@@ -32,7 +32,7 @@ class NewProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-                  'subcategories', 'available', 'discount_price', 'discount_percent', 'created_date', 'updated_date',
+                  'subcategories', 'available', 'discount_price', 'discount', 'created_date', 'updated_date',
                   'is_discount', 'is_new')
 
 
@@ -40,7 +40,7 @@ class DiscountProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-                  'subcategories', 'available', 'discount_price', 'discount_percent', 'created_date', 'updated_date',
+                  'subcategories', 'available', 'discount_price', 'discount', 'created_date', 'updated_date',
                   'is_discount', 'is_new')
 
 
