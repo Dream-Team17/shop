@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
-from .models import Product, Category, Subcategory, Vacant, FAQ
-from .serializers import ProductSerializer, CategorySerializer, SubcategorySerializer, NewProductSerializer, \
+from .models import Product, Category, Vacant, FAQ
+from .serializers import ProductSerializer, CategorySerializer, NewProductSerializer, \
     DiscountProductSerializer, VacantSerializer, FaqSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -22,12 +22,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name', ]
 
 
-class SubcategoryViewSet(viewsets.ModelViewSet):
-    queryset = Subcategory.objects.all()
-    serializer_class = SubcategorySerializer
-    lookup_field = 'subcategory_slug'
-    filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ('name',)
+# class SubcategoryViewSet(viewsets.ModelViewSet):
+#     queryset = Subcategory.objects.all()
+#     serializer_class = SubcategorySerializer
+#     lookup_field = 'subcategory_slug'
+#     filter_backends = (DjangoFilterBackend, SearchFilter)
+#     search_fields = ('name',)
 
 
 class NewProductViewSet(viewsets.ModelViewSet):

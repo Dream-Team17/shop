@@ -1,19 +1,19 @@
 from rest_framework import serializers
-from .models import Product, Category, Subcategory, Vacant, FAQ
+from .models import Product, Category, Vacant, FAQ
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name', 'image', 'category_slug')
+        fields = ('id', 'name', 'image', 'image_2', 'category_slug')
 
 
-class SubcategorySerializer(serializers.ModelSerializer):
-    categories = CategorySerializer(many=False)
-
-    class Meta:
-        model = Subcategory
-        fields = ('id', 'name', 'categories', 'subcategory_slug')
+# class SubcategorySerializer(serializers.ModelSerializer):
+#     categories = CategorySerializer(many=False)
+#
+#     class Meta:
+#         model = Subcategory
+#         fields = ('id', 'name', 'categories', 'subcategory_slug')
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -22,13 +22,12 @@ class ProductSerializer(serializers.ModelSerializer):
     discount_price = serializers.FloatField(min_value=0)
     weight_volume = serializers.FloatField(min_value=1)
     categories = CategorySerializer(many=False)
-    subcategories = SubcategorySerializer(many=False)
+    # subcategories = SubcategorySerializer(many=False)
 
     class Meta:
         model = Product
         fields = (
-            'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-            'subcategories', 'available', 'created_date', 'updated_date', 'is_new', 'discount_price',
+            'id', 'name', 'product_slug', 'image', 'description', 'price', 'categories', 'available', 'created_date', 'updated_date', 'is_new', 'discount_price',
             'valid_time', 'weight_volume', 'product_code')
 
 
@@ -36,14 +35,14 @@ class NewProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-                  'subcategories', 'available', 'discount_price', 'created_date', 'updated_date', 'is_new')
+                  'available', 'discount_price', 'created_date', 'updated_date', 'is_new')
 
 
 class DiscountProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'product_slug', 'image', 'description', 'price', 'categories',
-                  'subcategories', 'available', 'discount_price', 'created_date', 'updated_date', 'is_new')
+                  'available', 'discount_price', 'created_date', 'updated_date', 'is_new')
 
 
 class VacantSerializer(serializers.ModelSerializer):
