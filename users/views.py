@@ -7,7 +7,7 @@ from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer, \
-    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer, LogOutSerializer
+    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer, LogOutSerializer, PersonalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .utils import Util
@@ -120,3 +120,20 @@ class LogOutView(generics.GenericAPIView):
         serializer.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PersonalProfileView(APIView):
+    serializer_class = PersonalProfileSerializer
+    def get(self, request):
+        snippets = User.objects.filter(email=request.user)
+        serializer = PersonalProfileSerializer(snippets, many=True)
+
+        return Response(serializer.data)
+
+    # def put(self, request):
+        # user = User.objects.filter(email=request.user)
+        # serializer = PersonalProfileSerializer(user, data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

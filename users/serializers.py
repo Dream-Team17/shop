@@ -210,3 +210,14 @@ class LogOutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail('bad_token')
+class PersonalProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'username', 'number')
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['username'] = instance.username
+        repr['email'] = instance.email
+        repr['number'] = instance.number
+        return repr
