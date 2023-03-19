@@ -4,6 +4,7 @@ from .models import Product, Category, Vacant, FAQ
 from .serializers import ProductSerializer, CategorySerializer, NewProductSerializer, \
     DiscountProductSerializer, VacantSerializer, FaqSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -20,6 +21,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     lookup_field = 'category_slug'
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ['name', ]
+    # permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
 # class SubcategoryViewSet(viewsets.ModelViewSet):

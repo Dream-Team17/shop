@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Product, Category,Vacant, FAQ
+from core.models import Product, Category, Vacant, FAQ
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -29,9 +29,14 @@ class VacantAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     prepopulated_fields = {'vacant_slug': ('title',)}
 
+class FaqAdmin(admin.ModelAdmin):
+    list_display = ('title', 'faq_slug')
+    list_display_links = ('title',)
+    search_fields = ("title",)
+    prepopulated_fields = {'faq_slug': ('title',)}
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 # admin.site.register(Subcategory, SubcategoryAdmin)
 admin.site.register(Vacant, VacantAdmin)
-admin.site.register(FAQ)
+admin.site.register(FAQ, FaqAdmin)

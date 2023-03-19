@@ -23,7 +23,7 @@ class UserManager(BaseUserManager):
                 raise exceptions.ValidationError(f'This {data} is not available, please write another one')
         return user
 
-    def create_superuser(self, username,email, password, number):
+    def create_superuser(self, username, email, password, number):
         if password is None:
             raise TypeError('Password should not be none')
         user = self.create_user(username, email, password, number)

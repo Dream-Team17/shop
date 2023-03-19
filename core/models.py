@@ -1,6 +1,8 @@
+# from django.contrib.auth.models import User
 from django.db import models
 import pytils
 from .utils import path_and_rename, path_and_rename2, path_and_rename3, discount_price_count
+
 
 
 class Product(models.Model):
@@ -52,6 +54,7 @@ class Category(models.Model):
                                 blank=True, null=True)
     category_slug = models.SlugField(null=False, db_index=True, unique=True, verbose_name='URl', default='',
                                      help_text="Перед вводом названия категории очистите это поле")
+    # user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.category_slug = pytils.translit.slugify(self.name)
