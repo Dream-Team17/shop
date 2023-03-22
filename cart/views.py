@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
-from .models import Cart, DeliveryCost
-from .serializers import CartSerializer, DeliveryCostSerializer
+from .models import Cart, DeliveryCost, Order
+from .serializers import CartSerializer, DeliveryCostSerializer, OrderSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -16,4 +16,11 @@ class DeliveryCostViewSet(viewsets.ModelViewSet):
     serializer_class = DeliveryCostSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ['name', 'cost_per_delivery']
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ['address', 'number']
+
 
