@@ -4,10 +4,12 @@ from django.urls import reverse
 from django.utils.encoding import smart_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import status, generics, permissions
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer, EmailVerifySerializer, LoginSerializer, \
-    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer, LogOutSerializer, PersonalProfileSerializer
+    RequestResetPasswordEmailSerializer, SetNewPasswordSerializer, PasswordTokenCheckViewSerializer, LogOutSerializer, \
+    PersonalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from .utils import Util
@@ -29,7 +31,7 @@ class RegisterView(generics.GenericAPIView):
         user_data = serializer.data
         user = User.objects.get(email=user_data['email'])
         token = RefreshToken.for_user(user).access_token
-        current_site = '127.0.0.1:3000'
+        current_site = '127.0.0.1:8000'
         # current_site = get_current_site(request).domain
         relative_link = reverse('email-verify')
         absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
@@ -124,6 +126,15 @@ class LogOutView(generics.GenericAPIView):
 
 class PersonalProfileView(APIView):
     serializer_class = PersonalProfileSerializer
+
+    # def post(self, request, *args, **kwargs):
+    #     user = get_object_or_404(User, pk=request.user.pk)
+    #     serializer = self.get_serializer(data=request.data)
+    #
+    #     if serializer.is_valid():
+    #         user.profile = serializer.save()
+    #         return Response(PersonalProfileSerializer(user.profile))
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def get(self, request):
         snippets = User.objects.filter(email=request.user)
         serializer = PersonalProfileSerializer(snippets, many=True)
@@ -131,9 +142,9 @@ class PersonalProfileView(APIView):
         return Response(serializer.data)
 
     # def put(self, request):
-        # user = User.objects.filter(email=request.user)
-        # serializer = PersonalProfileSerializer(user, data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # user = User.objects.filter(email=request.user)
+    # serializer = PersonalProfileSerializer(user, data=request.data)
+    # if serializer.is_valid():
+    #     serializer.save()
+    #     return Response(serializer.data)
+    # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

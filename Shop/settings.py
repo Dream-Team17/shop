@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
+    #local apps
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_social_oauth2',
     'rest_framework_simplejwt',
@@ -41,7 +42,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'users',
     'core',
-    'cart'
+    'cart',
+    'corsheaders'
 ]
 
 JAZZMIN_SETTINGS = {
@@ -167,6 +169,7 @@ JAZZMIN_SETTINGS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -264,7 +267,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # pagination for all api requests for all urls
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 1000,
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -287,3 +290,12 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://okai.kg:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:9000",
+]

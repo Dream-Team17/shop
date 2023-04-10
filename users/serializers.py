@@ -8,7 +8,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from .registration_validators import validate_number
 from django.contrib.auth import password_validation
-from rest_framework import serializers, exceptions, status
+from rest_framework import serializers, exceptions, status, generics
 from .models import User
 from django.utils.http import urlsafe_base64_decode
 from django.db.utils import IntegrityError
@@ -47,7 +47,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         validate_unique = (('email', email1, email), ('username', username1, username))
         for value in validate_unique:
             if value[1]:
-                raise serializers.ValidationError(f'This {value[0]}: {value[2]} is not available, please write new one',400)
+                raise serializers.ValidationError(f'This {value[0]}: {value[2]} is not available, please write new one',
+                                                  400)
         return super().validate(attrs)
 
     def validate_number(self, number):
@@ -210,6 +211,8 @@ class LogOutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail('bad_token')
+
+
 class PersonalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

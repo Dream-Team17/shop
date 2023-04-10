@@ -12,5 +12,4 @@ class DeliveryCostSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['id', 'cart', 'delivery', 'number', 'address', 'delivery_comment', 'total_price', 'payment_method',
-                  'card_number']
+        fields = ['id', 'cart', 'delivery', 'number', 'address', 'delivery_comment', 'total_price', 'payment_method']
